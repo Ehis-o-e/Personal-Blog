@@ -58,10 +58,10 @@
     </style>
 </head>
 <body>
-    <a href= '/admin'> Admin</a>
+    <button><a href="/">User View</a></button>
     <div class="entry-page">
         <div class="name">
-            <h1>Enjoy the read</h1>
+            <h1>Tell Us Your Stories</h1>
         </div>
 
         <div class="content">
@@ -72,8 +72,10 @@
                     <%- post.html %>  <!-- This inserts the pre-built HTML -->
                 </div>
             <% }); %>
+        </div>
 
-            
+        <div>
+            <a href="/admin/new">Create</a>
         </div>
     </div>
 </body>
