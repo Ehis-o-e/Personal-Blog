@@ -1,6 +1,8 @@
 import express  from 'express';
 import fs from 'fs';
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
+import session from 'express-session';
+import 'dotenv/config';
 
 type Posts = {
     title: string;
@@ -19,6 +21,19 @@ type ProcessedPost = {
     title: string;
     date: string;
 };
+
+const credentials = {
+    username: process.env.ADMIN_USERNAME,
+    pwd: process.env.ADMIN_PASSWORD
+}
+
+if(!credentials.username|| !credentials.pwd){
+    console.error('❌ Missing environment variables! Please create a .env file with:');
+    console.error('ADMIN_USERNAME=your_username');
+    console.error('ADMIN_PASSWORD=your_password');
+    process.exit(1);
+}
+
 
 function loadJSONFile(filepath:string): Posts|undefined{
     
@@ -105,9 +120,23 @@ function entries(filepath:string, docName:string){
 return processedPosts;
 }
 
+function checkAuthentication(req:Request, res:Response, next: NextFunction){
+    if ((req.session as any).authenticated) {
+        next()
+} else {
+        res.redirect('/login')
+}
+}
+
 const app = express();
 app.set("view engine", "ejs")
 app.use(express.urlencoded({extended: true}))
+app.use(session({
+    secret:'secret-key',
+    resave: false,
+    saveUninitialized: false
+}))
+app.use('/admin', checkAuthentication);
 const PORT = 3000;
 
 app.get('/', (req,res) =>{
@@ -159,6 +188,26 @@ app.get('/admin/:filename', (req: Request, res: Response) => {
     renderPost(res, './post', req.params.filename!, 'adminPost');
 });
 
+app.get('/login', (req, res) => {
+    res.render('login', {
+       username:'',
+       pwd:'',
+       error:'' 
+    })
+})
+
+app.get('/logout', (req, res)=>{
+    (req.session as any).authenticated = false;
+    res.redirect('/')
+})
+
+app.get('/reset-admin', (req, res) => {
+    res.render('reset', {
+        username:'',
+        password:''
+    });
+});
+
 app.post('/admin/edit/:filename', (req, res) => {
     const formEntry = getContent(req);
     const formname = `${req.body.filename}.json`;
@@ -189,6 +238,44 @@ app.post('/admin/create', (req, res)=> {
     res.redirect(`/admin/${formname.slice(0, -5)}`)
 })
 
+app.post('/login', (req, res) => {
+    const username = req.body.username;
+    const password = req.body.pwd;
+    
+    // Add these debug lines:
+    console.log('Login attempt:');
+    console.log('Submitted username:', username);
+    console.log('Submitted password:', password);
+    console.log('Expected username:', credentials.username);
+    console.log('Expected password:', credentials.pwd);
+    console.log('Username match:', credentials.username === username);
+    console.log('Password match:', credentials.pwd === password);
+    
+    if(credentials.username === username && credentials.pwd === password){
+        (req.session as any).authenticated = true
+        res.redirect("/admin")
+    }else{
+        res.render('login', {
+            username:'',
+            pwd:'',
+            error:'Wrong username or password'
+        })
+    }
+})
+
+app.post('/reset-admin', (req, res) => {
+    const newUsername = req.body.username;
+    const newPassword = req.body.password;
+    
+    const envContent = `ADMIN_USERNAME=${newUsername}\nADMIN_PASSWORD=${newPassword}`;
+    fs.writeFileSync('.env', envContent);
+
+    credentials.username = newUsername;
+    credentials.pwd = newPassword;
+    
+    console.log('Environment file updated!'); // Debug line
+    res.redirect('/login');
+});
 
 app.listen(PORT, () =>{
     console.log(`Server running on http://localhost:${PORT}`);

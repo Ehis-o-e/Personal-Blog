@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+</head>
+<body>
+    <form action="/login" method ="post">
+        <label for="username">Username</label><br>
+        <input type="text" name="username" value="" required><br>
+        <label for="pwd">Password</label><br>
+        <input type="password" name="pwd" value="" required><br>
+        <button>Login</button>
+        <% if (error) { %>
+                <p style="color: red;"><%= error %></p>
+        <% } %>
+    </form>
+
+    <a href="/reset-admin">Forgot Password?</a>
+</body>
+</html>
