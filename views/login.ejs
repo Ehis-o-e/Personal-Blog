@@ -3,20 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
     <title>Login Page</title>
 </head>
-<body>
+<body class="login_body">
+    <h1 class="name">Login Here</h1>
     <form action="/login" method ="post">
         <label for="username">Username</label><br>
         <input type="text" name="username" value="" required><br>
         <label for="pwd">Password</label><br>
         <input type="password" name="pwd" value="" required><br>
-        <button>Login</button>
+
+        <div class="button-container">
+            <button type="submit">Login</button>
+            <button type="button">Sign Up</button>
+        </div>
+
         <% if (error) { %>
                 <p style="color: red;"><%= error %></p>
         <% } %>
+
+        <a href="/reset-admin">Forgot Password?</a>
     </form>
 
-    <a href="/reset-admin">Forgot Password?</a>
+    
 </body>
 </html>

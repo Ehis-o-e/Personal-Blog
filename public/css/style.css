@@ -1,0 +1,310 @@
+ body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #000000, #1a1a1a, #000000);
+            min-height: 100vh;
+        }
+
+        ul{
+            list-style-type: none;
+        }
+
+        .button{
+            margin: 5px;
+            color: white;
+            border: 2px solid white; /* Creates the border */
+            padding: 10px 20px;          /* Adds space between text and border */
+            display: inline-block; 
+            border-radius: 10px;
+            background: grey;
+        }
+
+        a{
+            text-decoration: none;
+            color: whitesmoke;
+        }
+
+        .option{
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nav{
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            color: white;
+            margin: 0 10px;
+        }
+
+        .entry-page {
+            color: white;
+        }
+       
+        .name {
+            font-size: 30px;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+        }
+        
+       .content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .post {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+            transition: transform 0.3s ease;
+        }   
+
+        .post:hover {
+            transform: translateY(-5px);
+        }
+
+        .post h2 {
+            color: white;
+            margin-top: 0;
+        }
+
+        .post-date {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        /*login page*/
+
+        .login_body{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+         }
+
+        form {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 40px;
+            width: 300px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+       input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            flex: 1; /* Makes buttons equal width */
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        a:hover {
+            color: white;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+       /*post page*/
+/*post page*/
+.post-page{
+    display: grid;
+    grid-template-columns: 30% 70%;
+    color: white;
+    min-height: 100vh;
+}
+
+.post-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.post-left h1 {
+    font-size: 3rem;
+    text-align: center;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.post-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding:  0 0 0 40px;
+}
+
+.post-form form {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 40px;
+    width: 60%;
+    height: 80%;
+    text-align: left;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+}
+
+.post-form input {
+    width: 100%;
+    padding: 10px 0;
+    margin-bottom: 15px;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    color: white;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.post-form textarea {
+    width: 100%;
+    padding: 10px 0;
+    margin-bottom: 15px;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    color: white;
+    box-sizing: border-box;
+    min-height: 240px;
+    resize: vertical;
+    font-size: 20px;
+}
+
+.post-form label {
+    display: block;
+    margin: 5px 0;
+    color: white;
+    font-size: 18px;
+}
+
+.post-form input:focus, .post-form textarea:focus {
+    outline: none;
+    border-bottom: 2px solid white;
+}
+
+/* Delete page */
+.delete-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+}
+
+.delete-page form {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+}
+
+.delete-page h1 {
+    color: white;
+    margin-bottom: 30px;
+}
+
+/* View page */
+.view-page {
+    min-height: 100vh;
+    color: white;
+    position: relative;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+}
+
+.view-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    padding: 20px;
+}
+
+.content-box {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 40px;
+    width: 35%;
+    max-width: 800px;
+    height: 80vh;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.content-box h1 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+.content-box p {
+    color: #ccc;
+    margin-bottom: 30px;
+    font-size: 0.9em;
+}
+
+.content-box .post-content {
+    color: white;
+    text-align: left;
+    line-height: 1.6;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.content-box .button-container {
+    margin-top: auto;
+    padding-top: 20px;
+}

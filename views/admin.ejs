@@ -2,71 +2,27 @@
 <html>
 <head>
     <title><%= pageTitle %></title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-        .entry-page {
-            display: flex;
-            min-height: 100vh;
-        }
-       
-        .name {
-            width: 20%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            border-right: 1px solid #eee;
-            background-color: #f9f9f9;
-        }
-        
-        .name h1 {
-            text-align: center;
-            margin: 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: white;
-        }
-        
-        .content {
-            width: 80%;
-            padding: 20px;
-        }
-        
-        .post {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 5px;
-            max-width: 800px;
-        }
-        
-        .post h2 {
-            color: #333;
-            margin-top: 0;
-        }
-        
-        .post-date {
-            color: #666;
-            font-size: 0.9em;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <button><a href="/logout">Logout</a></button>
-    
+    <div class="nav">
+    <h1 >Travesía</h1>
+    <nav>
+        <ul class="option">
+            <li><a href="/logout" class="button">Logout</a></li>
+            <li><a href="/admin/new" class ="button">Create</a></li>
+        </ul>
+    </nav>
+    </div>
+
     <div class="entry-page">
         <div class="name">
-            <h1>Tell Us Your Stories</h1>
+            <h1>Hi Ehis</h1>
+            <h2>Tell Us Your Stories</h2>
         </div>
 
         <div class="content">
-            <h1><%= pageTitle %></h1>
+            
         
             <% posts.forEach(post => { %>
                 <div class="post">
@@ -76,7 +32,7 @@
         </div>
         
         <div>
-            <a href="/admin/new">Create</a>
+            
         </div>
     </div>
 </body>

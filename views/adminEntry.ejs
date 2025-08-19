@@ -3,24 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
     <title>Document</title>
 </head>
 <body>
-    <h1>Tell us your story</h1>
-
-    <form action="<%=action%>" method="post" id="postEntry">
+    <div class="post-page">
+         <div class="post-left">
+        <h1>Tell us your story</h1>
+    </div>
+    
+    <div class="post-form">
+        <form action="<%=action%>" method="post" id="postEntry">
         <input type="hidden" name="filename" value="<%=filename||''%>">
 
         <label for="title">Title</label><br>
-        <input type="text" name="title" value="<%=title||''%>"  required><br>
+        <input type="text" name="title" value="<%=title||''%>" placeholder="" required><br>
 
         <label for="date" required>Date</label><br>
-        <input type="date" name="date" value="<%=date||''%>"  required><br>
+        <input type="date" name="date" value="<%=date||''%>" placeholder="What the date?" required><br>
 
         <label for="content">Content</label><br>
-        <textarea name="content" placeholder="Enter your message"><%=content||''%></textarea><br>
+        <textarea name="content" placeholder="Tell us your story"><%=content||''%></textarea><br>
 
-        <button>Post</button>
+        <div class="button-container">
+            <button>Post</button>
+            <button><a href="/admin">Back to Home</a></button>
+        </div>
+        
     </form>
+    </div>
+    </div>
+   
+    
 </body>
 </html>
