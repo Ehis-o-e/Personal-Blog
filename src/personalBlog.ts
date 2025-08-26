@@ -3,6 +3,8 @@ import fs from 'fs';
 import type { NextFunction, Request, Response } from 'express';
 import session from 'express-session';
 import 'dotenv/config';
+import Groq from 'groq-sdk';
+
 
 type Posts = {
     title: string;
@@ -22,6 +24,7 @@ type ProcessedPost = {
     date: string;
 };
 
+
 const credentials = {
     username: process.env.ADMIN_USERNAME,
     pwd: process.env.ADMIN_PASSWORD
@@ -34,9 +37,20 @@ if(!credentials.username|| !credentials.pwd){
     process.exit(1);
 }
 
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+// Test connection
+groq.chat.completions.create({
+    messages: [{ role: 'user', content: 'Hello world' }],
+    model: 'llama3-8b-8192',
+    max_tokens: 10
+}).then((result) => {
+    console.log(' Groq connected successfully!');
+}).catch((error) => {
+    console.error(' Groq connection failed:', error.message);
+});
 
 function loadJSONFile(filepath:string): Posts|undefined{
-    
     if(!fs.existsSync(filepath)){
         console.log("There are no entries");
         return undefined;
@@ -140,6 +154,7 @@ app.use(session({
 app.use('/admin', checkAuthentication);
 const PORT = 3000;
 
+/*TRAD*/
 app.get('/', (req,res) =>{
     const processedPosts = entries("./post", "post") ;
     res.render('index',  {posts: processedPosts,
@@ -242,15 +257,6 @@ app.post('/admin/create', (req, res)=> {
 app.post('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.pwd;
-    
-    // Add these debug lines:
-    console.log('Login attempt:');
-    console.log('Submitted username:', username);
-    console.log('Submitted password:', password);
-    console.log('Expected username:', credentials.username);
-    console.log('Expected password:', credentials.pwd);
-    console.log('Username match:', credentials.username === username);
-    console.log('Password match:', credentials.pwd === password);
     
     if(credentials.username === username && credentials.pwd === password){
         (req.session as any).authenticated = true
