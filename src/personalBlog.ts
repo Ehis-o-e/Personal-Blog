@@ -254,6 +254,28 @@ app.post('/admin/create', (req, res)=> {
     res.redirect(`/admin/${formname.slice(0, -5)}`)
 })
 
+app.post('/admin/generate-content', async(req, res) =>{
+   try {
+        const userPrompt = req.body.prompt;
+        const completion = await groq.chat.completions.create({
+            messages: [{ role: 'user', content: `Write a blog about: ${userPrompt}. Please write in plain text 
+                without any markdown formatting, asterisks, or special characters. 
+                Just write normal paragraphs and leave a space after each paragraph.` }],
+            model: 'llama3-8b-8192',
+            max_tokens: 500
+        });
+        const generatedContent = completion.choices[0]?.message?.content;
+            if (generatedContent) {
+                res.json({ content: generatedContent });
+            } else {
+                res.status(500).json({ error: 'No content generated' });
+            }
+   } catch (error) {
+         console.error('AI generation error:', error);
+        res.status(500).json({ error: 'Failed to generate content' });
+   }
+})
+
 app.post('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.pwd;

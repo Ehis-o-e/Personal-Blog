@@ -27,13 +27,90 @@
 
         <div class="button-container">
             <button>Post</button>
+            <button type="button" id="generateIdea" class="button">Generate Idea</button>
             <button><a href="/admin">Back to Home</a></button>
         </div>
-        
     </form>
     </div>
     </div>
    
-    
+    <div id="ideaPopup" style="display: none;">
+    <form class="popup-content">
+        <span class="close">&times;</span>
+        <h3>Generate Content Idea</h3>
+        <textarea id="ideaPrompt" placeholder="Describe what you want to write about..."></textarea>
+        <button type="button" id="generateBtn">Generate</button>
+        <div id="loadingMsg" style="display:none;">Generating...</div>
+    </form>
+    </div>
+
+    <script>
+        const popup = document.querySelector('#ideaPopup')
+        const closePopup = document.querySelector(".close")
+        const generateButton = document.querySelector("#generateIdea")
+        const generateContentBtn = document.querySelector('#generateBtn')
+
+        function showGeneratePopup(){
+            popup.style.display = 'flex';
+        }
+        function hidePopup(){
+            popup.style.display = 'none';
+        }
+        async function generateContent(){
+            const prompt = document.getElementById('ideaPrompt').value;
+
+            if(!prompt.trim()){
+                alert('Please enter a prompt first!')
+                return
+            }
+             const loadingMsg = document.getElementById('loadingMsg');
+            const generateBtn = document.getElementById('generateBtn');
+        
+            loadingMsg.style.display = 'block';
+            generateBtn.disabled = true;
+
+            try {
+                const response = await fetch('/admin/generate-content', {
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `prompt=${encodeURIComponent(prompt)}`
+                })
+
+                const data = await response.json();
+                if (data.content){
+                    const contentTextarea = document.querySelector('textarea[name="content"]');
+                    contentTextarea.value = data.content;
+                    
+                    hidePopup();
+                }else if(data.error){
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+               alert('Failed to generate content. Please try again.');
+                console.error('Generation error:', error);
+            } finally {
+                loadingMsg.style.display = 'none';
+                generateBtn.disabled = false;
+            }
+    }
+
+    generateButton.addEventListener('click', showGeneratePopup)
+    closePopup.addEventListener('click', hidePopup)
+    generateContentBtn.addEventListener('click', generateContent)
+
+     // Check if we should auto-open popup
+        const urlParams = new URLSearchParams(window.location.search);
+        const shouldGenerate = urlParams.get('generate');
+
+        if (shouldGenerate === 'true') {
+            showGeneratePopup();
+            
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+
+        generateContentBtn.addEventListener('click', generateContent)
+    </script>
 </body>
 </html>
