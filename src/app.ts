@@ -32,6 +32,11 @@ groq.chat.completions.create({
 });
 
 function main() {
+    // Create post directory if it doesn't exist
+    if (!fs.existsSync('./post')) {
+        fs.mkdirSync('./post', { recursive: true });
+    }
+
     const app = express();
     app.set("view engine", "ejs")
     app.use(express.urlencoded({ extended: true }))
@@ -191,7 +196,7 @@ app.post('/reset-admin', (req, res) => {
     credentials.username = newUsername;
     credentials.pwd = newPassword;
     
-    console.log('Environment file updated!'); // Debug line
+    console.log('Environment file updated!');
     res.redirect('/login');
 });
 
