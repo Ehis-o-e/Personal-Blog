@@ -23,7 +23,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 // Test Groq connection
 groq.chat.completions.create({
     messages: [{ role: 'user', content: 'Hello world' }],
-    model: 'llama3-8b-8192',
+    model: 'llama-3.3-70b-versatile',
     max_tokens: 10
 }).then((result) => {
     console.log(' Groq connected successfully!');
@@ -150,7 +150,7 @@ app.post('/admin/generate-content', async(req, res) =>{
             messages: [{ role: 'user', content: `Write a blog about: ${userPrompt}. Please write in plain text 
                 without any markdown formatting, asterisks, or special characters. 
                 Just write normal paragraphs and leave a space after each paragraph.` }],
-            model: 'llama3-8b-8192',
+            model: 'llama-3.3-70b-versatile',
             max_tokens: 500
         });
         const generatedContent = completion.choices[0]?.message?.content;
