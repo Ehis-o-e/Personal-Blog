@@ -1,37 +1,18 @@
-import express  from 'express';
+import express from 'express';
+import session from 'express-session';
 import fs from 'fs';
 import type { NextFunction, Request, Response } from 'express';
-import session from 'express-session';
+import { checkAuthentication, entries, renderPost, loadJSONFile,getContent } from './functions.js';
 import 'dotenv/config';
 import Groq from 'groq-sdk';
-
-
-type Posts = {
-    title: string;
-    date:Date|string;
-    content:string;
-}
-
-type TitleAndDate = {
-    filename:string;
-    title: string;
-    date: string;
-}
-
-type ProcessedPost = {
-    html: string;
-    title: string;
-    date: string;
-};
-
 
 const credentials = {
     username: process.env.ADMIN_USERNAME,
     pwd: process.env.ADMIN_PASSWORD
 }
 
-if(!credentials.username|| !credentials.pwd){
-    console.error('❌ Missing environment variables! Please create a .env file with:');
+if (!credentials.username || !credentials.pwd) {
+    console.error('Missing environment variables! Please create a .env file with:');
     console.error('ADMIN_USERNAME=your_username');
     console.error('ADMIN_PASSWORD=your_password');
     process.exit(1);
@@ -39,7 +20,7 @@ if(!credentials.username|| !credentials.pwd){
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// Test connection
+// Test Groq connection
 groq.chat.completions.create({
     messages: [{ role: 'user', content: 'Hello world' }],
     model: 'llama3-8b-8192',
@@ -50,112 +31,20 @@ groq.chat.completions.create({
     console.error(' Groq connection failed:', error.message);
 });
 
-function loadJSONFile(filepath:string): Posts|undefined{
-    if(!fs.existsSync(filepath)){
-        console.log("There are no entries");
-        return undefined;
-    }
+function main() {
+    const app = express();
+    app.set("view engine", "ejs")
+    app.use(express.urlencoded({ extended: true }))
+    app.use(express.static('public'));
+    app.use(session({
+        secret: 'secret-key',
+        resave: false,
+        saveUninitialized: false
+    }))
+    app.use('/admin', checkAuthentication);
+    const PORT = 3000;
 
-    try{
-        const contents =fs.readFileSync(filepath, 'utf-8')
-        return JSON.parse(contents) as Posts
-    } catch{
-        return undefined;   
-    }
-}
-
-function getTitleAndDate(filepath:string): TitleAndDate[]{
-    const fileNames = fs.readdirSync(filepath)
-    const td: TitleAndDate[] = []
-    fileNames.forEach((fileName)=>{
-        const content = loadJSONFile(`${filepath}/${fileName}`);
-        if(content){
-            td.push({
-                filename:fileName, 
-                title: content.title,
-                date: content.date ? 
-                    (typeof content.date === 'string' ? content.date : content.date.toISOString()) 
-                    : 'No date'
-            })
-        }
-    }
-)
-return td
-}
-
-function renderPost(res: Response, folder: string, filename: string, view: string) {
-    const data = loadJSONFile(`${folder}/${filename}.json`);
-    if (!data) {
-        res.status(404).send("Post not found");
-        return;
-    }
-    res.render(view, {
-        title: data.title,
-        date: data.date,
-        content: data.content,
-        filename: filename 
-    });
-}
-
-function getContent(req: Request ): Posts{
-     const formTitle:string = req.body.title;
-    const formDate:string|Date = req.body.date;
-    const formContent:string = req.body.content;
-    const formEntry = {
-        title: formTitle,
-        date:formDate,
-        content: formContent,
-    }
-
-    return formEntry;
-}
-
-function entries(filepath:string, docName:string){
-    const post = getTitleAndDate(`${filepath}`)
-    const processedPosts: ProcessedPost[] = [];
-
-    post.forEach((item)=>{
-        const postName = item.filename;
-        const postTitle:string = item.title;
-        const postDate:string = item.date;
-
-        const postHTML= `
-        <div class= "post">
-            <a href = "/${docName}/${postName.slice(0, -5)}"><h2>${postTitle}</h2></a>
-            <p class="post-date">${postDate}</p>
-        </div>`;
-
-        processedPosts.push({
-            html: postHTML,
-            title: postTitle,
-            date: postDate
-        });
-    })
-return processedPosts;
-}
-
-function checkAuthentication(req:Request, res:Response, next: NextFunction){
-    if ((req.session as any).authenticated) {
-        next()
-    } else {
-        res.redirect('/login')
-    }
-}
-
-const app = express();
-app.set("view engine", "ejs")
-app.use(express.urlencoded({extended: true}))
-app.use(express.static('public'));
-app.use(session({
-    secret:'secret-key',
-    resave: false,
-    saveUninitialized: false
-}))
-app.use('/admin', checkAuthentication);
-const PORT = 3000;
-
-/*TRAD*/
-app.get('/', (req,res) =>{
+   app.get('/', (req,res) =>{
     const processedPosts = entries("./post", "post") ;
     res.render('index',  {posts: processedPosts,
         pageTitle: "My Blog Posts"});
@@ -306,6 +195,9 @@ app.post('/reset-admin', (req, res) => {
     res.redirect('/login');
 });
 
-app.listen(PORT, () =>{
-    console.log(`Server running on http://localhost:${PORT}`);
-})
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+}
+
+main();
